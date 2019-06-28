@@ -35,7 +35,7 @@ public class APISample {
     	String definitionUUID = args[1];
     	String username = args[2];
     	String password = args[3];
-    	String inputData = args[4];
+    	String inputFileCSV = args[4];
     	
         APISample apiSample = new APISample();
         apiSample.login(baseURL+ "/dologin", username, password);
@@ -44,7 +44,7 @@ public class APISample {
         String serviceInfo = apiSample.get(baseURL + "/api/v2/workfusion/service/info");
 
         //launch new business process
-        String uuid = apiSample.startBusinessProcess(baseURL, definitionUUID, inputData);
+        String uuid = apiSample.startBusinessProcess(baseURL, definitionUUID, readCSV(inputFileCSV));
         System.out.println("BP UUID: "+uuid);
         System.out.println("Business Process Status: "+apiSample.getBusinessProcessStatus(baseURL, uuid));
         System.out.println("Service Info: "+serviceInfo);
