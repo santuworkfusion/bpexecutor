@@ -1,9 +1,13 @@
 package workfusion;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -22,16 +26,6 @@ import com.google.gson.annotations.SerializedName;
 //Not a production grade implementation use as an example only
 public class APISample {
 
-    //public static String BASE_URL = "https://rcm-2242-922-ct1.workfusion.com/workfusion";
-    //public static String START_BP_URL = BASE_URL + "/api/v2/workfusion/task/file";
-    //public static String STATUS_BP_URL = BASE_URL + "/api/v2/workfusion/task/";
-    //public static String LOGIN_URL = BASE_URL + "/dologin";
-
-
-    //public static String DEFINITION_UUID = "5d51937f-3f6e-464e-9904-4f8f1be5c362";
-    //public static String USERNAME = "it";
-    //public static String PASSWORD = "Workfusion123";
-
     private HttpClient httpClient;
 
     public APISample() {
@@ -43,6 +37,7 @@ public class APISample {
     	String definitionUUID = args[1];
     	String username = args[2];
     	String password = args[3];
+    	String inputFileCSV = args[4];
     	
         APISample apiSample = new APISample();
         apiSample.login(baseURL+ "/dologin", username, password);
@@ -51,7 +46,7 @@ public class APISample {
         String serviceInfo = apiSample.get(baseURL + "/api/v2/workfusion/service/info");
 
         //launch new business process
-        String uuid = apiSample.startBusinessProcess(baseURL, definitionUUID);
+        String uuid = apiSample.startBusinessProcess(baseURL, definitionUUID, readCSV(inputFileCSV));
         System.out.println("BP UUID: "+uuid);
         System.out.println("Business Process Status: "+apiSample.getBusinessProcessStatus(baseURL, uuid));
         System.out.println("Service Info: "+serviceInfo);
@@ -59,11 +54,40 @@ public class APISample {
         
     }
     
+    /**
+     * 
+     * @param inputFileCSV
+     * @return
+     */
+    public static String readCSV(String inputFileCSV) {
+        String line = "";
+        StringBuilder finalStr = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFileCSV))) {
+            while ((line = br.readLine()) != null) {
+            	finalStr.append(line+"\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return finalStr.toString();
+    }
+    
+    /**
+     * 
+     * @param is
+     * @return
+     */
     static String convertStreamToString(java.io.InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }
 
+    /**
+     * 
+     * @param addressURL
+     * @return
+     * @throws IOException
+     */
     public String get(String addressURL) throws IOException {
 
         HttpGet httpGet = new HttpGet(addressURL);
@@ -73,6 +97,13 @@ public class APISample {
         return convertStreamToString(response.getEntity().getContent());
     }
 
+    /**
+     * 
+     * @param addressURL
+     * @param body
+     * @return
+     * @throws IOException
+     */
     public String post(String addressURL, AbstractHttpEntity body) throws IOException {
 
         HttpPost httpPost = new HttpPost(addressURL);
@@ -86,6 +117,13 @@ public class APISample {
         return stringResponse;
     }
 
+    /**
+     * 
+     * @param loginURL
+     * @param username
+     * @param password
+     * @throws IOException
+     */
     public void login(String loginURL, String username, String password) throws IOException {
 
         List<NameValuePair> nvp = new ArrayList<>();
@@ -95,21 +133,20 @@ public class APISample {
         post(loginURL, new UrlEncodedFormEntity(nvp));
     }
 
-    public String startBusinessProcess(String baseURL, String uuid) throws IOException {
+    /**
+     * 
+     * @param baseURL
+     * @param uuid
+     * @param inputData
+     * @return
+     * @throws IOException
+     */
+    public String startBusinessProcess(String baseURL, String uuid, String inputData) throws IOException {
         TaskStart taskStart = new TaskStart();
         taskStart.setCampaignUuid(uuid);
 
         //pass CSV file content here to provide input for a business process
-        taskStart.setMainData("original_document_url\n" + 
-        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2865%29.pdf\n" + 
-        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2866%29.pdf\n" + 
-        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2867%29.pdf\n" + 
-        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2868%29.pdf\n" + 
-        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2869%29.pdf\n" + 
-        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2870%29.pdf\n" + 
-        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2871%29.pdf\n" + 
-        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2872%29.pdf\n" + 
-        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2873%29.pdf");
+        taskStart.setMainData(inputData);
 
         StringEntity body = new StringEntity(new Gson().toJson(taskStart));
 
@@ -119,11 +156,22 @@ public class APISample {
         return post(baseURL + "/api/v2/workfusion/task/file", body);
     }
 
+    /**
+     * 
+     * @param baseURL
+     * @param uuid
+     * @return
+     * @throws IOException
+     */
     public String getBusinessProcessStatus(String baseURL, String uuid) throws IOException {
         return get(baseURL + "/api/v2/workfusion/task/" + uuid);
     }
 
-
+    /**
+     * 
+     * @author Santu
+     *
+     */
     private static class TaskStart implements Serializable {
 
         @SerializedName("campaignUuid")
