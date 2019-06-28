@@ -100,7 +100,7 @@ public class APISample {
         taskStart.setCampaignUuid(uuid);
 
         //pass CSV file content here to provide input for a business process
-        taskStart.setMainData("loan_amt\n100000");
+        taskStart.setMainData("original_document_url\nhttps://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2865%29.pdf");
 
         StringEntity body = new StringEntity(new Gson().toJson(taskStart));
 
