@@ -22,15 +22,15 @@ import com.google.gson.annotations.SerializedName;
 //Not a production grade implementation use as an example only
 public class APISample {
 
-    public static String BASE_URL = "https://watt.workfusion.com/workfusion";
+    public static String BASE_URL = "https://rcm-2242-922-ct1.workfusion.com/workfusion";
     public static String START_BP_URL = BASE_URL + "/api/v2/workfusion/task/file";
     public static String STATUS_BP_URL = BASE_URL + "/api/v2/workfusion/task/";
     public static String LOGIN_URL = BASE_URL + "/dologin";
 
 
-    public static String DEFINITION_UUID = "9f77dd77-f921-4cfc-bf1a-34ee15ea7d46";
-    public static String USERNAME = "29657@automationacademy.com";
-    public static String PASSWORD = "Radhaswami@1";
+    public static String DEFINITION_UUID = "5d51937f-3f6e-464e-9904-4f8f1be5c362";
+    public static String USERNAME = "it";
+    public static String PASSWORD = "Workfusion123";
 
     private HttpClient httpClient;
 
@@ -108,7 +108,6 @@ public class APISample {
         //launch new business process
         String uuid = apiSample.startBusinessProcess(DEFINITION_UUID);
         System.out.println("BP UUID: "+uuid);
-        //String uuid = "899ffee8-37ee-42c5-9d2d-79b5c21572a7";
         System.out.println("Business Process Status: "+apiSample.getBusinessProcessStatus(uuid));
         System.out.println("Service Info: "+serviceInfo);
         
