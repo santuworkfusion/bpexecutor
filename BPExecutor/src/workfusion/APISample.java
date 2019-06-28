@@ -13,7 +13,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -33,7 +32,7 @@ public class APISample {
     public static String USERNAME = "it";
     public static String PASSWORD = "Workfusion123";
 
-    private CloseableHttpClient httpClient;
+    private HttpClient httpClient;
 
     public APISample() {
         httpClient = HttpClients.createDefault();
