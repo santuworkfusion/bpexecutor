@@ -22,15 +22,15 @@ import com.google.gson.annotations.SerializedName;
 //Not a production grade implementation use as an example only
 public class APISample {
 
-    public static String BASE_URL = "https://rcm-2242-922-ct1.workfusion.com/workfusion";
-    public static String START_BP_URL = BASE_URL + "/api/v2/workfusion/task/file";
-    public static String STATUS_BP_URL = BASE_URL + "/api/v2/workfusion/task/";
-    public static String LOGIN_URL = BASE_URL + "/dologin";
+    //public static String BASE_URL = "https://rcm-2242-922-ct1.workfusion.com/workfusion";
+    //public static String START_BP_URL = BASE_URL + "/api/v2/workfusion/task/file";
+    //public static String STATUS_BP_URL = BASE_URL + "/api/v2/workfusion/task/";
+    //public static String LOGIN_URL = BASE_URL + "/dologin";
 
 
-    public static String DEFINITION_UUID = "5d51937f-3f6e-464e-9904-4f8f1be5c362";
-    public static String USERNAME = "it";
-    public static String PASSWORD = "Workfusion123";
+    //public static String DEFINITION_UUID = "5d51937f-3f6e-464e-9904-4f8f1be5c362";
+    //public static String USERNAME = "it";
+    //public static String PASSWORD = "Workfusion123";
 
     private HttpClient httpClient;
 
@@ -38,6 +38,27 @@ public class APISample {
         httpClient = HttpClients.createDefault();
     }
 
+    public static void main(String... args) throws IOException {
+    	String baseURL = args[0];
+    	String definitionUUID = args[1];
+    	String username = args[2];
+    	String password = args[3];
+    	
+        APISample apiSample = new APISample();
+        apiSample.login(baseURL+ "/dologin", username, password);
+
+        //get version details and alike
+        String serviceInfo = apiSample.get(baseURL + "/api/v2/workfusion/service/info");
+
+        //launch new business process
+        String uuid = apiSample.startBusinessProcess(baseURL, definitionUUID);
+        System.out.println("BP UUID: "+uuid);
+        System.out.println("Business Process Status: "+apiSample.getBusinessProcessStatus(baseURL, uuid));
+        System.out.println("Service Info: "+serviceInfo);
+        
+        
+    }
+    
     static String convertStreamToString(java.io.InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
@@ -65,20 +86,16 @@ public class APISample {
         return stringResponse;
     }
 
-    public void login() throws IOException {
+    public void login(String loginURL, String username, String password) throws IOException {
 
         List<NameValuePair> nvp = new ArrayList<>();
-        nvp.add(new BasicNameValuePair("j_username", USERNAME));
-        nvp.add(new BasicNameValuePair("j_password", PASSWORD));
+        nvp.add(new BasicNameValuePair("j_username", username));
+        nvp.add(new BasicNameValuePair("j_password", password));
 
-        //simply post username and password to the server to login
-        //re-use the httpClient instance to make sure same JSESSIONID cookie is used
-
-        //UrlEncodedFormEntity will set Content-Type=application/x-www-form-urlencoded
-        post(LOGIN_URL, new UrlEncodedFormEntity(nvp));
+        post(loginURL, new UrlEncodedFormEntity(nvp));
     }
 
-    public String startBusinessProcess(String uuid) throws IOException {
+    public String startBusinessProcess(String baseURL, String uuid) throws IOException {
         TaskStart taskStart = new TaskStart();
         taskStart.setCampaignUuid(uuid);
 
@@ -90,28 +107,11 @@ public class APISample {
         //the server may return error if you do not Content-Type=application/json
         body.setContentType("application/json");
 
-        return post(START_BP_URL, body);
+        return post(baseURL + "/api/v2/workfusion/task/file", body);
     }
 
-    public String getBusinessProcessStatus(String uuid) throws IOException {
-        return get(STATUS_BP_URL + uuid);
-    }
-
-
-    public static void main(String... args) throws IOException {
-        APISample apiSample = new APISample();
-        apiSample.login();
-
-        //get version details and alike
-        String serviceInfo = apiSample.get(BASE_URL + "/api/v2/workfusion/service/info");
-
-        //launch new business process
-        String uuid = apiSample.startBusinessProcess(DEFINITION_UUID);
-        System.out.println("BP UUID: "+uuid);
-        System.out.println("Business Process Status: "+apiSample.getBusinessProcessStatus(uuid));
-        System.out.println("Service Info: "+serviceInfo);
-        
-        
+    public String getBusinessProcessStatus(String baseURL, String uuid) throws IOException {
+        return get(baseURL + "/api/v2/workfusion/task/" + uuid);
     }
 
 
