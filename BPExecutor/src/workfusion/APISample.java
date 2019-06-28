@@ -1,13 +1,11 @@
 package workfusion;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -37,7 +35,7 @@ public class APISample {
     	String definitionUUID = args[1];
     	String username = args[2];
     	String password = args[3];
-    	String inputFileCSV = args[4];
+    	String inputData = args[4];
     	
         APISample apiSample = new APISample();
         apiSample.login(baseURL+ "/dologin", username, password);
@@ -46,7 +44,7 @@ public class APISample {
         String serviceInfo = apiSample.get(baseURL + "/api/v2/workfusion/service/info");
 
         //launch new business process
-        String uuid = apiSample.startBusinessProcess(baseURL, definitionUUID, readCSV(inputFileCSV));
+        String uuid = apiSample.startBusinessProcess(baseURL, definitionUUID, inputData);
         System.out.println("BP UUID: "+uuid);
         System.out.println("Business Process Status: "+apiSample.getBusinessProcessStatus(baseURL, uuid));
         System.out.println("Service Info: "+serviceInfo);
