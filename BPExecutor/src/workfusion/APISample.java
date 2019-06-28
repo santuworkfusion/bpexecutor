@@ -100,7 +100,16 @@ public class APISample {
         taskStart.setCampaignUuid(uuid);
 
         //pass CSV file content here to provide input for a business process
-        taskStart.setMainData("original_document_url\nhttps://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2865%29.pdf");
+        taskStart.setMainData("original_document_url\n" + 
+        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2865%29.pdf\n" + 
+        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2866%29.pdf\n" + 
+        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2867%29.pdf\n" + 
+        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2868%29.pdf\n" + 
+        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2869%29.pdf\n" + 
+        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2870%29.pdf\n" + 
+        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2871%29.pdf\n" + 
+        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2872%29.pdf\n" + 
+        		"https://aa-materials.s3.amazonaws.com/Materials/AES_cert/PDFs/Document%20%2873%29.pdf");
 
         StringEntity body = new StringEntity(new Gson().toJson(taskStart));
 
