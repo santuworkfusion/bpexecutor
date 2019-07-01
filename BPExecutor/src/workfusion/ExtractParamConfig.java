@@ -17,7 +17,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class ExtractParamConfig {
 	
-	public static List<ReportRow> readConfig(String bpConfigPaths) throws InvalidFormatException, FileNotFoundException, IOException {
+	public static List<ReportRow> readMainConfig(String bpConfigPaths) throws InvalidFormatException, FileNotFoundException, IOException {
 		List<ReportRow> listOfDataFromReport = null;
 		if(bpConfigPaths!=null && !"".equals(bpConfigPaths)) {
 			Workbook workbook = WorkbookFactory.create(new FileInputStream(bpConfigPaths));
@@ -41,18 +41,21 @@ public class ExtractParamConfig {
 				ReportRow rr = new ReportRow(); // Data structure to hold the data from the xls file.
 				Row dataRow = sheet.getRow(x); // get row 1 to row n (rows containing data)
 
-				int idxForColumn1 = map.get("DEFINITION_UUID"); // get the column index for the column with header name = "Column1"
-				int idxForColumn2 = map.get("INPUT_CSV_PATH"); // get the column index for the column with header name = "Column2"
-				int idxForColumn3 = map.get("EXPECTED_STATUS"); // get the column index for the column with header name = "Column3"
+				int idxForColumn1 = map.get("BP_CATEGORY"); // get the column index for the column with header name = "Column1"
+				int idxForColumn2 = map.get("DEFINITION_UUID"); // get the column index for the column with header name = "Column2"
+				int idxForColumn3 = map.get("INPUT_CSV_PATH"); // get the column index for the column with header name = "Column3"
+				int idxForColumn4 = map.get("EXPECTED_STATUS"); // get the column index for the column with header name = "Column2"
 
+				
 				Cell cell1 = dataRow.getCell(idxForColumn1); // Get the cells for each of the indexes
 				Cell cell2 = dataRow.getCell(idxForColumn2);
 				Cell cell3 = dataRow.getCell(idxForColumn3);
+				Cell cell4 = dataRow.getCell(idxForColumn4);
 
-				rr.setDefinitionUUID(cell1.getStringCellValue()); // Get the values out of those cells and put them into the report
-															// row object
-				rr.setInputCsvPath(cell2.getStringCellValue());
-				rr.setExpectedStatus(cell3.getStringCellValue());
+				rr.setBpCategory(cell1.getStringCellValue()); // Get the values out of those cells and put them into the report
+				rr.setDefinitionUUID(cell2.getStringCellValue());
+				rr.setInputCsvPath(cell3.getStringCellValue());
+				rr.setExpectedStatus(cell4.getStringCellValue());
 
 				listOfDataFromReport.add(rr);
 
@@ -67,10 +70,17 @@ public class ExtractParamConfig {
 }
 
 class ReportRow {
+	private String bpCategory;
 	private String definitionUUID;
 	private String inputCsvPath;
 	private String expectedStatus;
-	
+
+	public String getBpCategory() {
+		return bpCategory;
+	}
+	public void setBpCategory(String bpCategory) {
+		this.bpCategory = bpCategory;
+	}
 	public String getDefinitionUUID() {
 		return definitionUUID;
 	}
@@ -89,6 +99,4 @@ class ReportRow {
 	public void setExpectedStatus(String expectedStatus) {
 		this.expectedStatus = expectedStatus;
 	}
-
-	
 }

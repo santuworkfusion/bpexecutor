@@ -1,12 +1,15 @@
 package workfusion;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -125,18 +128,21 @@ public class CommonUtil {
 	public String startBusinessProcess(String baseURL, String uuid, String inputData) throws IOException {
 		TaskStart taskStart = new TaskStart();
 		taskStart.setCampaignUuid(uuid);
-
 		// pass CSV file content here to provide input for a business process
 		taskStart.setMainData(inputData);
-
 		StringEntity body = new StringEntity(new Gson().toJson(taskStart));
-
 		// the server may return error if you do not Content-Type=application/json
 		body.setContentType("application/json");
-
 		return post(baseURL + "/api/v2/workfusion/task/file", body);
 	}
 
+	@SuppressWarnings("deprecation")
+	public boolean isTwoFilesIdentical(String filePath1, String filePath2) throws IOException {
+		HashSet<String> f1 = new HashSet<String>(FileUtils.readLines(new File(filePath1)));
+		HashSet<String> f2 = new HashSet<String>(FileUtils.readLines(new File(filePath2)));
+		f1.removeAll(f2);
+		return f1.isEmpty();
+	}
 	/**
 	 * 
 	 * @param baseURL
