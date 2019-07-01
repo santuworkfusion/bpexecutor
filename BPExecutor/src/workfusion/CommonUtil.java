@@ -17,6 +17,8 @@ import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -126,8 +128,7 @@ public class CommonUtil {
 
 		// pass CSV file content here to provide input for a business process
 		taskStart.setMainData(inputData);
-		
-		
+
 		StringEntity body = new StringEntity(new Gson().toJson(taskStart));
 
 		// the server may return error if you do not Content-Type=application/json
@@ -145,6 +146,18 @@ public class CommonUtil {
 	 */
 	public String getBusinessProcessStatus(String baseURL, String uuid) throws IOException {
 		return get(baseURL + "/api/v2/workfusion/task/" + uuid);
+	}
+
+	public String getBPStatus(String jsonInput) {
+		String status = "";
+
+		try {
+			JSONObject jsonObj = (JSONObject) new JSONParser().parse(jsonInput);
+			status = (String) jsonObj.get("status");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
 	}
 
 	/**
