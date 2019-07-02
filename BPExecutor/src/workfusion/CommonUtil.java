@@ -26,7 +26,11 @@ import org.json.simple.parser.JSONParser;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-//Not a production grade implementation use as an example only
+/**
+ * 
+ * @author Santu
+ *
+ */
 public class CommonUtil {
 
 	private HttpClient httpClient;
@@ -36,9 +40,9 @@ public class CommonUtil {
 	}
 
 	/**
-	 * 
+	 * This method read the CSV input file of BP
 	 * @param inputFileCSV
-	 * @return
+	 * @return {@link String}
 	 */
 	public static String readCSV(String inputFileCSV) {
 		String line = "";
@@ -59,19 +63,19 @@ public class CommonUtil {
 	}
 
 	/**
-	 * 
-	 * @param is
-	 * @return
+	 * This method converts the stream to string
+	 * @param inputStream
+	 * @return {@link String}
 	 */
-	static String convertStreamToString(java.io.InputStream is) {
-		java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+	static String convertStreamToString(java.io.InputStream inputStream) {
+		java.util.Scanner s = new java.util.Scanner(inputStream).useDelimiter("\\A");
 		return s.hasNext() ? s.next() : "";
 	}
 
 	/**
-	 * 
+	 * This method invokes the HTTP GET request
 	 * @param addressURL
-	 * @return
+	 * @return {@link String}
 	 * @throws IOException
 	 */
 	public String get(String addressURL) throws IOException {
@@ -84,10 +88,10 @@ public class CommonUtil {
 	}
 
 	/**
-	 * 
+	 * This method invokes the HTTP POST request
 	 * @param addressURL
 	 * @param body
-	 * @return
+	 * @return {@link String}
 	 * @throws IOException
 	 */
 	public String post(String addressURL, AbstractHttpEntity body) throws IOException {
@@ -102,7 +106,7 @@ public class CommonUtil {
 	}
 
 	/**
-	 * 
+	 * This method is responsible to log in to the Control Tower using credentials.
 	 * @param loginURL
 	 * @param username
 	 * @param password
@@ -118,11 +122,11 @@ public class CommonUtil {
 	}
 
 	/**
-	 * 
+	 * This method is responsible to start the BP
 	 * @param baseURL
 	 * @param uuid
 	 * @param inputData
-	 * @return
+	 * @return {@link String}
 	 * @throws IOException
 	 */
 	public String startBusinessProcess(String baseURL, String uuid, String inputData) throws IOException {
@@ -136,24 +140,22 @@ public class CommonUtil {
 		return post(baseURL + "/api/v2/workfusion/task/file", body);
 	}
 
-	@SuppressWarnings("deprecation")
-	public boolean isTwoFilesIdentical(String filePath1, String filePath2) throws IOException {
-		HashSet<String> f1 = new HashSet<String>(FileUtils.readLines(new File(filePath1)));
-		HashSet<String> f2 = new HashSet<String>(FileUtils.readLines(new File(filePath2)));
-		f1.removeAll(f2);
-		return f1.isEmpty();
-	}
 	/**
-	 * 
+	 * This method retrieves the response of BP in JSON format
 	 * @param baseURL
 	 * @param uuid
-	 * @return
+	 * @return {@link String}
 	 * @throws IOException
 	 */
 	public String getBusinessProcessStatus(String baseURL, String uuid) throws IOException {
 		return get(baseURL + "/api/v2/workfusion/task/" + uuid);
 	}
 
+	/**
+	 * This method is responsible to get the status of BP
+	 * @param jsonInput
+	 * @return {@link String}
+	 */
 	public String getBPStatus(String jsonInput) {
 		String status = "";
 

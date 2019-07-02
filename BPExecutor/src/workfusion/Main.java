@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+
 public class Main {
 
 	public static void main(String... args) throws IOException, InvalidFormatException, InterruptedException {
@@ -17,12 +18,8 @@ public class Main {
 		CommonUtil util = new CommonUtil();
 		util.login(baseURL + "/dologin", username, password);
 
-		// String serviceInfo = apiSample.get(baseURL +
-		// "/api/v2/workfusion/service/info");
-
 		List<ReportRow> configList = ExtractParamConfig.readMainConfig(bpConfigCSV);
 
-		// Now you have a list of report rows
 		if (configList != null && configList.size() > 0) {
 			for (int j = 0; j < configList.size(); j++) {
 				System.out.println("\n##################\nSTARTING BP. Definition UUID: "
