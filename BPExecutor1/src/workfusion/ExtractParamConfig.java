@@ -15,6 +15,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+/**
+ * 
+ * @author Santu Das
+ *
+ */
 public class ExtractParamConfig {
 	
 	/**
@@ -75,6 +80,11 @@ public class ExtractParamConfig {
 	}
 }
 
+/**
+ * 
+ * @author Santu Das
+ *
+ */
 class ReportRow {
 	private String bpCategory;
 	private String definitionUUID;

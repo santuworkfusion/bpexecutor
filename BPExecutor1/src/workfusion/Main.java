@@ -5,12 +5,15 @@ import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
-
+/**
+ * 
+ * @author Santu Das
+ *
+ */
 public class Main {
 
 	public static void main(String... args) throws IOException, InvalidFormatException, InterruptedException {
 		String baseURL = args[0];
-		// String definitionUUID = args[1];
 		String username = args[1];
 		String password = args[2];
 		String bpConfigCSV = args[3];
@@ -30,13 +33,17 @@ public class Main {
 						CommonUtil.readCSV(configList.get(j).getInputCsvPath()));
 				System.out.println("BP UUID: " + uuid);
 				
-				Thread.sleep(120000);
-					
-				System.out.println("Business Process Status: " + util.getBusinessProcessStatus(baseURL, uuid));
-				String expectationAchieved = (configList.get(j).getExpectedStatus()
-						.equalsIgnoreCase(util.getBPStatus(util.getBusinessProcessStatus(baseURL, uuid))))? "TRUE": "FALSE";
+				String bpExecutionResultJSON = util.getBusinessProcessStatus(baseURL, uuid);
+				String actualBPExecutionStatus = util.getBPStatus(bpExecutionResultJSON);
+				String expectedBPStatus = configList.get(j).getExpectedStatus();
+				while(actualBPExecutionStatus!=null && !actualBPExecutionStatus.equalsIgnoreCase(expectedBPStatus)) {
+					bpExecutionResultJSON = util.getBusinessProcessStatus(baseURL, uuid);
+					actualBPExecutionStatus = util.getBPStatus(bpExecutionResultJSON);
+					System.out.println("Waiting for status to be '"+expectedBPStatus+"' as provided in input config file. Current status: "+actualBPExecutionStatus);
+				}
+				System.out.println("Business Process Status: " + bpExecutionResultJSON);
+				String expectationAchieved = (expectedBPStatus.equalsIgnoreCase(actualBPExecutionStatus))? "TRUE": "FALSE";
 				System.out.println("EXPECTATION ACHIEVED: " + expectationAchieved);
-				
 			}
 		}
 	}

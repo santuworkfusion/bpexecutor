@@ -1,15 +1,12 @@
 package workfusion;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -170,7 +167,7 @@ public class CommonUtil {
 
 	/**
 	 * 
-	 * @author Santu
+	 * @author Santu Das
 	 *
 	 */
 	private static class TaskStart implements Serializable {
